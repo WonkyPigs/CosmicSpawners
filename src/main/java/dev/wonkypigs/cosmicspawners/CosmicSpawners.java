@@ -2,6 +2,7 @@ package dev.wonkypigs.cosmicspawners;
 
 import dev.wonkypigs.cosmicspawners.listeners.PlayerBreakBlock;
 import dev.wonkypigs.cosmicspawners.listeners.PlayerPlaceBlock;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -14,6 +15,13 @@ public final class CosmicSpawners extends JavaPlugin {
         // Plugin startup logic
         getServer().getPluginManager().registerEvents(new PlayerBreakBlock(), this);
         getServer().getPluginManager().registerEvents(new PlayerPlaceBlock(), this);
+
+        int pluginId = 1234; // <-- Replace with the id of your plugin!
+        Metrics metrics = new Metrics(this, pluginId);
+
+        UpdateChecker updateChecker = new UpdateChecker();
+        updateChecker.check();
+        getServer().getPluginManager().registerEvents(updateChecker, this);
 
         getLogger().info("CosmicSpawners has been enabled!");
     }
@@ -28,5 +36,9 @@ public final class CosmicSpawners extends JavaPlugin {
     public String getConfigValue(String key) {
         String ans = getConfig().getString(key);
         return ChatColor.translateAlternateColorCodes('&', ans);
+    }
+
+    public static CosmicSpawners getInstance() {
+        return getPlugin(CosmicSpawners.class);
     }
 }
