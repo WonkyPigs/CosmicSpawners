@@ -1,3 +1,4 @@
 # Do players need to have the silk touch enchant in order to obtain spawners upon breaking them?
 # Default value: true
 silk-touch-needed: true
+update-checker: true

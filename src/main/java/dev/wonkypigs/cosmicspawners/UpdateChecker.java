@@ -16,24 +16,26 @@ public class UpdateChecker implements Listener {
     private static final CosmicSpawners plugin = CosmicSpawners.getInstance();
 
     private String url = "https://api.spigotmc.org/legacy/update.php?resource=";
-    private String id = "106729";
+    private String id = "104794";
 
     private boolean isAvailable;
     private String remoteVersion;
 
-    public UpdateChecker() {
-
-    }
-
-    public boolean isAvailable() {
-        return isAvailable;
-    }
-
     @EventHandler
     public void on(PlayerJoinEvent event) {
+        if(!plugin.getConfig().getBoolean("update-checker")) {
+            return;
+        }
         if (event.getPlayer().isOp()) {
-            if (isAvailable()) {
-                event.getPlayer().sendMessage("&cThere is a new update available for CosmicVaults!\n&cCurrent version: " + plugin.getDescription().getVersion() + "\n&cNew version: " + remoteVersion);
+            check();
+            if (isAvailable) {
+                event.getPlayer().sendMessage("&a&m---------------------------------".replace("&", "§"));
+                event.getPlayer().sendMessage("&b&lThere is a new update available for CosmicSpawners!\n&c&lCurrent version: &d{current}\n&a&lNew version: &d{new}\n&a&lDownload Here: &a{link}"
+                        .replace("{current}", plugin.getDescription().getVersion())
+                        .replace("{new}", remoteVersion)
+                        .replace("{link}", "www.spigotmc.org/resources/104794")
+                        .replace("&", "§"));
+                event.getPlayer().sendMessage("&a&m---------------------------------".replace("&", "§"));
             }
         }
     }
@@ -43,7 +45,6 @@ public class UpdateChecker implements Listener {
     }
 
     private boolean checkUpdate() {
-        plugin.getLogger().info("Checking for updates...");
         try {
             String localVersion = CosmicSpawners.getInstance().getDescription().getVersion();
             HttpsURLConnection connection = (HttpsURLConnection) new URL(url + id).openConnection();

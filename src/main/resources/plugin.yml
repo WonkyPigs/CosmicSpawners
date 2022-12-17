@@ -1,6 +1,7 @@
 name: CosmicSpawners
 version: '${project.version}'
 main: dev.wonkypigs.cosmicspawners.CosmicSpawners
-api-version: 1.19
+api-version: 1.13
 authors: [ WonkyPigs ]
+prefix: CosmicSpawners
 description: A plugin that allows you to break spawners in Minecraft and more!

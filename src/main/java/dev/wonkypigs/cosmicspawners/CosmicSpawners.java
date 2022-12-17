@@ -8,15 +8,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class CosmicSpawners extends JavaPlugin {
 
-    public String prefix = ChatColor.translateAlternateColorCodes('&', "&8&l[&6CosmicSpawners&8]&r ");
-
     @Override
     public void onEnable() {
         // Plugin startup logic
         getServer().getPluginManager().registerEvents(new PlayerBreakBlock(), this);
         getServer().getPluginManager().registerEvents(new PlayerPlaceBlock(), this);
 
-        int pluginId = 1234; // <-- Replace with the id of your plugin!
+        int pluginId = 17092; // <-- Replace with the id of your plugin!
         Metrics metrics = new Metrics(this, pluginId);
 
         UpdateChecker updateChecker = new UpdateChecker();
