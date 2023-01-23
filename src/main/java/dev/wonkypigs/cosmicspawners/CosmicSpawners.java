@@ -1,6 +1,5 @@
 package dev.wonkypigs.cosmicspawners;
 
-import com.tchristofferson.configupdater.ConfigUpdater;
 import dev.wonkypigs.cosmicspawners.listeners.PlayerBreakBlock;
 import dev.wonkypigs.cosmicspawners.listeners.PlayerPlaceBlock;
 import org.bstats.bukkit.Metrics;
@@ -10,9 +9,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+
 
 public final class CosmicSpawners extends JavaPlugin {
+
+    public double confVersion = 1.1;
 
     @Override
     public void onEnable() {
@@ -20,26 +21,7 @@ public final class CosmicSpawners extends JavaPlugin {
         saveDefaultConfig();
 
         // if config version is old, update it to current version
-        File configFile = new File(getDataFolder(), "config.yml");
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
-
-        if (config.getDouble("config-version") != 1.1) {
-            config.set("config-version", 1.1);
-            try {
-                ConfigUpdater.update(this, "config.yml", configFile, Arrays.asList("none"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            // save changes
-            try {
-                config.save(configFile);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            // reload config
-            reloadConfig();
-            getLogger().info("Updated config file to latest version");
-        }
+        updateConfig();
 
 
         // Plugin startup logic
@@ -60,6 +42,41 @@ public final class CosmicSpawners extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
         getLogger().info("CosmicSpawners has been disabled!");
+    }
+
+    public void updateConfig() {
+
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
+
+        if (config.getDouble("config-version") <= 1.0) {
+            // rename config.yml to old-config.yml
+            File oldConfig = new File(getDataFolder(), "old-config.yml");
+            File configFile = new File(getDataFolder(), "config.yml");
+            configFile.renameTo(oldConfig);
+
+            // create new config.yml
+            saveDefaultConfig();
+            getConfig().set("config-version", confVersion);
+            getLogger().severe("==========================");
+            getLogger().info("You were using an old format of");
+            getLogger().info("the config.yml file. It has been");
+            getLogger().info("updated to the current version.");
+            getLogger().info("Make sure to update all values!");
+            getLogger().severe("==========================");
+            return;
+        }
+
+        config = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
+
+        if (config.getDouble("config-version") != confVersion) {
+            try {
+                new ConfigUpdater(this, "config.yml", "config-updater.yml").update();
+            } catch (IOException e) {
+                getLogger().severe("Could not update config.yml!");
+                e.printStackTrace();
+            }
+        }
+        reloadConfig();
     }
 
     // Getting values from config with color coding

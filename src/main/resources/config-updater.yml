@@ -1,0 +1,8 @@
+stringlists:
+
+ignored:
+  - "^config-version$"
+
+doublequotes:
+
+escape-newlines:
